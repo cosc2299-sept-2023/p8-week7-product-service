@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product List</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Product List</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Store</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody id="productTableBody">
+        <!-- Product data will be inserted here -->
+        </tbody>
+    </table>
+</div>
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-
+     labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productModalLabel">Product
+                    Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-
+                        label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Product details will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-
+                        dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Function to fetch data from the REST API
+    function fetchProducts() {
+// Replace 'http://localhost:8080/api/products' with the actual API
+        fetch('http://localhost:8080/product-service/get')
+            .then(response => response.json())
+            .then(data => {
+                const productTableBody =
+                    document.getElementById('productTableBody');
+// Loop through the products and generate table rows
+                data.forEach(product => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                                <td>${product.productId}</td>
+                                <td>${product.productName}</td>
+                                <td>${product.store}</td>
+                                <td><button class="btn btn-primary"
+                    onclick="showProductDetails(${product.productId}, '${product.productName}', ${product.store})" data-toggle="modal" data-target="#productModal">Show Details</button></td>
+                    `;
+                    productTableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
+    // Function to show the product details in the modal
+    function showProductDetails(id, name, price) {
+        console.log(id, name, price)
+        const modalBody = document.querySelector('.modal-body');
+        modalBody.innerHTML = `
+                        <h5>ID: ${id}</h5>
+                        <h5>Name: ${name}</h5>
+                        <h5>Price: $${price}</h5>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
+                        risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed,
+                        dolor.</p>
+                        `;}
+    // Call the fetchProducts function to populate the table
+    fetchProducts();
+</script>
+<!-- Include Bootstrap JavaScript (optional) -->
+<script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
